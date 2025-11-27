@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
+import { protect } from '$lib/server/api/middleware';
 
-const orgs = new Hono().get('/', async (c) => {
+const orgs = new Hono().get('/', protect, async (c) => {
 	const Org = c.var.Org;
 
 	const data = await Org.findMany();
