@@ -1,6 +1,11 @@
 import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { PRIVATE_TURNSTILE_SECRET_KEY, PRIVATE_ADMIN_PASSWORD } from '$env/static/private';
+import {
+	PRIVATE_TURNSTILE_SECRET_KEY,
+	PRIVATE_ADMIN_PASSWORD,
+	PRIVATE_JWT_SECRET
+} from '$env/static/private';
+import { SignJWT } from 'jose';
 
 interface TurnstileVerifyResponse {
 	success: boolean;
@@ -13,8 +18,6 @@ export const actions = {
 		const password = data.get('password');
 		const token = data.get('cf-turnstile-response') as string;
 
-		// 1. Check Turnstile first (Prevent Bot Spam)
-		// We do this BEFORE checking the password to save resources
 		const cfVerify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
@@ -30,17 +33,24 @@ export const actions = {
 			return fail(400, { error: 'Security check failed. Please try again.' });
 		}
 
-		// 2. Check Password
 		if (password !== PRIVATE_ADMIN_PASSWORD) {
 			return fail(403, { error: 'Incorrect access code.' });
 		}
 
-		// 3. Success
-		cookies.set('admin_session', 'authenticated', {
+		const secret = new TextEncoder().encode(PRIVATE_JWT_SECRET);
+
+		const jwtToken = await new SignJWT({ admin: true })
+			.setProtectedHeader({ alg: 'HS256' })
+			.setIssuedAt()
+			.setExpirationTime('7d')
+			.sign(secret);
+
+		cookies.set('admin_session', jwtToken, {
 			path: '/',
 			httpOnly: true,
+			secure: true,
 			sameSite: 'strict',
-			maxAge: 60 * 60 * 24 * 7 // 1 week
+			maxAge: 60 * 60 * 24 * 7 // 7 days
 		});
 
 		throw redirect(303, '/admin');
