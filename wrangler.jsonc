@@ -19,7 +19,7 @@
 	},
 	"d1_databases": [
 		{
-			"binding": "gametime",
+			"binding": "DB",
 			"database_name": "gametime",
 			"database_id": "3f68afdf-75f3-41c2-9655-1c26e0139d82"
 		}
