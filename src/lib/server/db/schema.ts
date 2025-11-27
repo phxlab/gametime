@@ -10,3 +10,5 @@ export const orgs = sqliteTable('orgs', {
 		.$defaultFn(() => new Date())
 		.$onUpdate(() => new Date())
 });
+
+export const schema = { orgs };
