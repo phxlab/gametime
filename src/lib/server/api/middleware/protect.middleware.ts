@@ -3,7 +3,6 @@ import type { Env } from '$lib/server/types/hono';
 import { jwtVerify } from 'jose';
 import { getCookie } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
-import { handleJoseError } from '$lib/server/errors';
 
 const protectMiddleware = createMiddleware<Env>(async (c, next) => {
 	const secret = new TextEncoder().encode(c.env.PRIVATE_JWT_SECRET);
@@ -13,11 +12,7 @@ const protectMiddleware = createMiddleware<Env>(async (c, next) => {
 		throw new HTTPException(401, { message: 'Unauthorized', cause: 'No token provided' });
 	}
 
-	try {
-		await jwtVerify(token, secret);
-	} catch (err) {
-		handleJoseError(err, 'Unauthorized');
-	}
+	await jwtVerify(token, secret);
 
 	await next();
 });
