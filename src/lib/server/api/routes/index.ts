@@ -1,1 +1,1 @@
-export { default as orgs } from './Orgs.route.ts';
+export { default as orgs } from './orgs/Orgs.route.ts';
