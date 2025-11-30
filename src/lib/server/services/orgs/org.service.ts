@@ -1,5 +1,5 @@
 import { type DrizzleD1Database } from 'drizzle-orm/d1';
-import type { NewOrg, schema } from '$lib/server/db/schema';
+import type { NewOrg, schema, UpdateOrg } from '$lib/server/db/schema';
 import { orgs } from '$lib/server/db/schema';
 import { HTTPException } from 'hono/http-exception';
 import { eq } from 'drizzle-orm';
@@ -31,7 +31,25 @@ class OrgService {
 	}
 
 	public async getBySlug(slug: string) {
-		const data = await this.db.query.orgs.findFirst({ where: (orgs) => eq(orgs.slug, slug) });
+		const data = await this.db.query.orgs.findFirst({ where: eq(orgs.slug, slug) });
+
+		if (!data) {
+			throw new HTTPException(404, { message: 'Org not found' });
+		}
+
+		return data;
+	}
+
+	public async updateBySlug(slug: string, updateData: UpdateOrg) {
+		const newData = {
+			name: updateData.name
+		};
+		const data = await this.db
+			.update(orgs)
+			.set(newData)
+			.where(eq(orgs.slug, slug))
+			.returning()
+			.get();
 
 		if (!data) {
 			throw new HTTPException(404, { message: 'Org not found' });

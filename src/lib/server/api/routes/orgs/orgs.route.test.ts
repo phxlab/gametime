@@ -150,4 +150,70 @@ describe('Orgs', () => {
 			expect(res.success).toBe(true);
 		});
 	});
+
+	describe('PUT /orgs/:org', () => {
+		it('should fail no token', async () => {
+			const req = await client.orgs[':slug'].$put({
+				json: {
+					name: 'Test Org'
+				},
+				param: {
+					slug: 'main'
+				}
+			});
+
+			const res = await req.json();
+
+			expect(req.status).toBe(401);
+			expect(res.success).toBe(false);
+		});
+
+		it('should pass', async () => {
+			const req = await client.orgs[':slug'].$put(
+				{
+					json: {
+						name: 'Test Org 123'
+					},
+					param: {
+						slug: 'main'
+					}
+				},
+				{
+					headers: {
+						Cookie: `admin_session=${token.valid}`
+					}
+				}
+			);
+
+			const res = await req.json();
+
+			expect(req.status).toBe(200);
+			expect(res.success).toBe(true);
+			expect(res.data.name).toBe('Test Org 123');
+		});
+
+		it('should fail no data', async () => {
+			const req = await client.orgs[':slug'].$put(
+				{
+					json: {
+						//@ts-expect-error: Should fail due to test
+						name: null
+					},
+					param: {
+						slug: 'main'
+					}
+				},
+				{
+					headers: {
+						Cookie: `admin_session=${token.valid}`
+					}
+				}
+			);
+
+			const res = await req.json();
+
+			expect(req.status).toBe(400);
+			expect(res.success).toBe(false);
+		});
+	});
 });

@@ -28,6 +28,12 @@ export const insertOrgSchema = createSelectSchema(orgs, {
 
 export const updateOrgSchema = createSelectSchema(orgs, {
 	name: (schema) => schema
+}).omit({
+	id: true,
+	slug: true,
+	createdAt: true,
+	updatedAt: true
 });
 
 export type NewOrg = z.infer<typeof insertOrgSchema>;
+export type UpdateOrg = z.infer<typeof updateOrgSchema>;
