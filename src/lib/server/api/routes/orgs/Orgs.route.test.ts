@@ -11,6 +11,7 @@ describe('Orgs', async () => {
 			slug: 'main'
 		});
 	});
+
 	describe('GET /orgs', async () => {
 		it('should fail with no token', async () => {
 			const req = await client.orgs.$get();
@@ -56,6 +57,27 @@ describe('Orgs', async () => {
 			expect(res.data).toBe(undefined);
 		});
 
+		it('should fail making duplicate', async () => {
+			const req = await client.orgs.$post(
+				{
+					json: {
+						name: 'Main',
+						slug: 'main'
+					}
+				},
+				{
+					headers: {
+						Cookie: `admin_session=${token.valid}`
+					}
+				}
+			);
+
+			const res = await req.json();
+
+			expect(req.status).toBe(409);
+			expect(res.success).toBe(false);
+		});
+
 		it('should create an org', async () => {
 			const req = await client.orgs.$post(
 				{
@@ -75,9 +97,34 @@ describe('Orgs', async () => {
 
 			expect(req.status).toBe(201);
 			expect(res.success).toBe(true);
-			expect(res.data).toBeDefined();
+			expect(res.data.name).toBe('Test Org');
+			expect(res.data.slug).toBe('test');
+		});
+
+		it('should create an org and make url safe', async () => {
+			const req = await client.orgs.$post(
+				{
+					json: {
+						name: 'Test Org',
+						slug: 'TeSt 123'
+					}
+				},
+				{
+					headers: {
+						Cookie: `admin_session=${token.valid}`
+					}
+				}
+			);
+
+			const res = await req.json();
+
+			expect(req.status).toBe(201);
+			expect(res.success).toBe(true);
+			expect(res.data.name).toBe('Test Org');
+			expect(res.data.slug).toBe('test-123');
 		});
 	});
+
 	describe('GET /orgs/:org', () => {
 		it('should fail with invalid org', async () => {
 			const req = await client.orgs[':slug'].$get({
