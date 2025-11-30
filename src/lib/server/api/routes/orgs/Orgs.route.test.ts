@@ -4,7 +4,7 @@ import { generateTestTokens } from '$lib/test/defaults.ts';
 
 const token = await generateTestTokens();
 
-describe('Orgs', async () => {
+describe('Orgs', () => {
 	beforeAll(async () => {
 		await Org.create({
 			name: 'Main Store',
@@ -12,7 +12,7 @@ describe('Orgs', async () => {
 		});
 	});
 
-	describe('GET /orgs', async () => {
+	describe('GET /orgs', () => {
 		it('should fail with no token', async () => {
 			const req = await client.orgs.$get();
 
@@ -41,7 +41,7 @@ describe('Orgs', async () => {
 		});
 	});
 
-	describe('POST /orgs', async () => {
+	describe('POST /orgs', () => {
 		it('should fail with no token', async () => {
 			const req = await client.orgs.$post({
 				json: {
