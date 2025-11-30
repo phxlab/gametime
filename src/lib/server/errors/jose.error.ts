@@ -56,7 +56,6 @@ const handleJoseError = (err: unknown, c: Context) => {
 		}
 	}
 
-	console.log(cause);
 	return c.json(
 		{
 			success: false,
