@@ -18,12 +18,16 @@ export const orgs = sqliteTable('orgs', {
 export const schema = { orgs };
 
 export const insertOrgSchema = createSelectSchema(orgs, {
-	name: (schema) => schema.min(3, 'Name must be at least 3 chars'),
+	name: (schema) => schema,
 	slug: (schema) => schema
 }).omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true
+});
+
+export const updateOrgSchema = createSelectSchema(orgs, {
+	name: (schema) => schema
 });
 
 export type NewOrg = z.infer<typeof insertOrgSchema>;
