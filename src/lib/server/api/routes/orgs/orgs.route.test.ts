@@ -10,6 +10,13 @@ describe('Orgs', () => {
 			name: 'Main Store',
 			slug: 'main'
 		});
+
+		await Org.create({
+			name: 'Archived Store',
+			slug: 'archived'
+		});
+
+		await Org.deleteBySlug('archived');
 	});
 
 	describe('GET /orgs', () => {
@@ -23,7 +30,7 @@ describe('Orgs', () => {
 			expect(res.data).toBe(undefined);
 		});
 
-		it('should list all Orgs', async () => {
+		it('should list all active Orgs', async () => {
 			const req = await client.orgs.$get(
 				{},
 				{
@@ -38,6 +45,7 @@ describe('Orgs', () => {
 			expect(req.status).toBe(200);
 			expect(res.success).toBe(true);
 			expect(res.data).toBeDefined();
+			expect(res.data.length).toBe(1);
 		});
 	});
 
@@ -134,6 +142,19 @@ describe('Orgs', () => {
 			});
 			const res = await req.json();
 
+			expect(req.status).toBe(404);
+			expect(res.success).toBe(false);
+		});
+
+		it('should fail with archived org', async () => {
+			const req = await client.orgs[':slug'].$get({
+				param: {
+					slug: 'archived'
+				}
+			});
+			const res = await req.json();
+
+			expect(req.status).toBe(404);
 			expect(res.success).toBe(false);
 		});
 
@@ -165,6 +186,29 @@ describe('Orgs', () => {
 			const res = await req.json();
 
 			expect(req.status).toBe(401);
+			expect(res.success).toBe(false);
+		});
+
+		it('should fail archived Org', async () => {
+			const req = await client.orgs[':slug'].$put(
+				{
+					json: {
+						name: 'Test Org'
+					},
+					param: {
+						slug: 'archived'
+					}
+				},
+				{
+					headers: {
+						Cookie: `admin_session=${token.valid}`
+					}
+				}
+			);
+
+			const res = await req.json();
+
+			expect(req.status).toBe(404);
 			expect(res.success).toBe(false);
 		});
 
@@ -237,6 +281,41 @@ describe('Orgs', () => {
 
 			expect(req.status).toBe(404);
 			expect(res.success).toBe(false);
+		});
+	});
+
+	describe('DELETE /orgs/:org', () => {
+		it('should fail no token', async () => {
+			const req = await client.orgs[':slug'].$delete({
+				param: {
+					slug: 'main'
+				}
+			});
+
+			const res = await req.json();
+
+			expect(req.status).toBe(401);
+			expect(res.success).toBe(false);
+		});
+
+		it('should succeed', async () => {
+			const req = await client.orgs[':slug'].$delete(
+				{
+					param: {
+						slug: 'main'
+					}
+				},
+				{
+					headers: {
+						Cookie: `admin_session=${token.valid}`
+					}
+				}
+			);
+
+			const res = await req.json();
+
+			expect(req.status).toBe(200);
+			expect(res.success).toBe(true);
 		});
 	});
 });
