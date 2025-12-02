@@ -18,12 +18,12 @@ class OrgService {
 	}
 
 	public async create(insertData: NewOrg) {
-		const data = {
-			name: insertData.name,
-			slug: insertData.slug.toLowerCase().replace(/[^a-z0-9]/g, '-')
-		};
-
-		const result = await this.db.insert(orgs).values(data).onConflictDoNothing().returning().get();
+		const result = await this.db
+			.insert(orgs)
+			.values(insertData)
+			.onConflictDoNothing()
+			.returning()
+			.get();
 
 		if (!result) {
 			throw new HTTPException(409, { message: 'Conflict', cause: 'Org already exists' });
@@ -45,14 +45,9 @@ class OrgService {
 	}
 
 	public async updateBySlug(slug: string, updateData: UpdateOrg) {
-		const newData = {
-			name: updateData.name,
-			archivedAt: null
-		};
-
 		const data = await this.db
 			.update(orgs)
-			.set(newData)
+			.set(updateData)
 			.where(and(eq(orgs.slug, slug), isNull(orgs.archivedAt)))
 			.returning()
 			.get();
