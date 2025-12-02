@@ -52,6 +52,21 @@ const orgs = new Hono()
 			success: true,
 			data
 		});
+	})
+	.delete('/:slug', protect, async (c) => {
+		const { slug } = c.req.param();
+		const Org = c.var.Org;
+
+		await Org.deleteBySlug(slug);
+
+		return c.json(
+			{
+				success: true,
+				data: {},
+				message: 'Organization deleted successfully.'
+			},
+			200
+		);
 	});
 
 export default orgs;
