@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { protect } from '$lib/server/api/middleware';
-import { insertOrgSchema, updateOrgSchema } from '$lib/server/db/schema.ts';
+import { insertOrgSchema, updateOrgSchema } from '$lib/server/db/schema';
 import { sValidator } from '@hono/standard-validator';
 
 const orgs = new Hono()
