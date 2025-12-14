@@ -23,7 +23,13 @@ const globalErrorHandler = (err: Error, c: Context) => {
 
 	console.error(err);
 
-	return c.json({ message: 'Internal Server Error' }, 500);
+	return c.json({
+		success: false,
+		error: {
+			name: 'Internal Server Error',
+			message: 'Internal Server Error'
+		}
+	}, 500);
 };
 
 export default globalErrorHandler;
