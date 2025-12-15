@@ -21,3 +21,17 @@ function outside(node: Node, listener: string, callback: (node: Event) => void) 
 		}
 	};
 }
+
+export function toSlug(text: string) {
+	return text
+		.toString()
+		.toLowerCase()
+		.replace(/\s+/g, '-')     // Replace spaces with -
+		.replace(/[^a-z0-9-]/g, '') // Remove all non-word chars
+		.replace(/-+/g, '-')      // Replace multiple - with single -
+		.replace(/^-+/, '')       // Trim - from start of text
+}
+
+export function slugify(text: string) {
+	return toSlug(text).trim().replace(/-+$/, '');
+}
