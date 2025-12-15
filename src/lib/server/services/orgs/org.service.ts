@@ -13,7 +13,14 @@ class OrgService {
 
 	public async findMany() {
 		return this.db.query.orgs.findMany({
-			where: isNull(orgs.archivedAt)
+			where: isNull(orgs.archivedAt),
+			columns: {
+				id: true,
+				name: true,
+				slug: true,
+				createdAt: true
+			},
+			orderBy: (orgs, { asc }) => [asc(orgs.name)],
 		});
 	}
 
