@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
 	import type {SuperValidated } from 'sveltekit-superforms';
-	import type { NewOrg } from '$lib/server/db/schema';
+	import type { NewOrg, UpdateOrg } from '$lib/server/db/schema';
 	import { TextInput, SlugInput, SubmitButton } from '$lib/components/admin/ui';
+	import { untrack } from 'svelte';
 	
 	interface Props {
 		mode?: 'create' | 'update';
-		formData: SuperValidated<NewOrg>;
+		formData: SuperValidated<NewOrg> | SuperValidated<UpdateOrg>;
 	}
 	
 	let { mode = 'create', formData }: Props = $props();
 	
-	const { form, errors, enhance, constraints, message, delayed } = superForm(formData);
+	const { form, errors, enhance, constraints, message, delayed } = superForm(untrack(() => formData));
 </script>
 
 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -34,16 +35,16 @@
 			label="Organization Name"
 		/>
 		
-		
-		<SlugInput
-			type="text"
-			id="slug"
-			name="slug"
-			bind:value={$form.slug}
-			error={$errors.slug}
-			{...$constraints.slug}
-			label="URL Slug"
-		/>
+			<SlugInput
+				type="text"
+				id="slug"
+				name="slug"
+				disabled={mode === 'update'}
+				bind:value={$form.slug}
+				error={$errors.slug}
+				{...$constraints.slug}
+				label="URL Slug"
+			/>
 		
 		
 		<SubmitButton
