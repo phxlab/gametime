@@ -1,3 +1,3 @@
-export { default as contextMiddleware } from './context.middleware.ts';
-export { default as protect } from './protect.middleware.ts';
-export { default as zValidator } from './vallidator.middleware.ts'
+export { default as contextMiddleware } from './context.middleware';
+export { default as protect } from './protect.middleware';
+export { default as zValidator } from './vallidator.middleware';

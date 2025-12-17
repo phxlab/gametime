@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { client, Org } from '$lib/test/setup';
-import { generateTestTokens } from '$lib/test/defaults.ts';
+import { generateTestTokens } from '$lib/test/defaults';
 
 const token = await generateTestTokens();
 

@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 import { JOSEError } from 'jose/errors';
-import handleJoseError from '$lib/server/errors/jose.error.ts';
+import handleJoseError from '$lib/server/errors/jose.error';
 import { HTTPException } from 'hono/http-exception';
 
 const globalErrorHandler = (err: Error, c: Context) => {
@@ -23,13 +23,16 @@ const globalErrorHandler = (err: Error, c: Context) => {
 
 	console.error(err);
 
-	return c.json({
-		success: false,
-		error: {
-			name: 'Internal Server Error',
-			message: 'Internal Server Error'
-		}
-	}, 500);
+	return c.json(
+		{
+			success: false,
+			error: {
+				name: 'Internal Server Error',
+				message: 'Internal Server Error'
+			}
+		},
+		500
+	);
 };
 
 export default globalErrorHandler;

@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { orgs } from '../schema/orgs.schema.ts';
-import { stores } from '../schema/stores.schema';
+import { stores, orgs } from '$lib/server/db/schema';
 
 export const orgsRelations = relations(orgs, ({ many }) => ({
 	stores: many(stores)

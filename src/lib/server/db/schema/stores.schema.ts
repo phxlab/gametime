@@ -1,6 +1,6 @@
 import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
-import { timestamps, archivedAt } from './shared.ts';
-import { orgs } from './orgs.schema.ts';
+import { timestamps, archivedAt } from './shared';
+import { orgs } from './orgs.schema';
 
 export const stores = sqliteTable(
 	'stores',

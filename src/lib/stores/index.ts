@@ -1,1 +1,1 @@
-export { default as orgState } from './orgs.svelte.ts';
+export { default as orgState } from './orgs.svelte';

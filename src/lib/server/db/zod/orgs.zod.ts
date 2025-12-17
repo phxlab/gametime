@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { orgs } from '../schema/orgs.schema';
+import { orgs } from '$lib/server/db/schema';
 import { selectStoreSchema } from './stores.zod';
 import { z } from 'zod';
 

@@ -8,6 +8,7 @@ class StoresService {
 		this.db = db;
 	}
 
+	public async list() {}
 }
 
 export default StoresService;

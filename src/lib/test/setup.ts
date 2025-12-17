@@ -1,5 +1,5 @@
 import { testClient } from 'hono/testing';
-import app, { type AppType } from '$lib/server/api/app.ts';
+import app, { type AppType } from '$lib/server/api/app';
 import { applyD1Migrations, env } from 'cloudflare:test';
 import { drizzle } from 'drizzle-orm/d1';
 import { schema } from '$lib/server/db/schema';
