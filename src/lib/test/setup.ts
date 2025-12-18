@@ -8,6 +8,6 @@ import { Org as OrgService } from '$lib/server/services';
 await applyD1Migrations(env.DB, env.TEST_MIGRATIONS);
 export const client = testClient<AppType>(app, env).api;
 
-const db = drizzle(env.DB, { schema });
+export const db = drizzle(env.DB, { schema });
 
 export const Org = new OrgService(db);
