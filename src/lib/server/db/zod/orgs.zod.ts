@@ -5,13 +5,14 @@ import { z } from 'zod';
 
 const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+const slugSchema = z.string().min(3, 'Slug must be at least 3 characters').regex(slugRegex, {
+	message:
+		'Slug must be lowercase, alphanumeric, and cannot contain spaces, double dashes, or start/end with a dash.'
+});
+
 export const insertOrgSchema = createInsertSchema(orgs, {
 	name: (schema) => schema.min(1, 'Name is required'),
-	slug: (schema) =>
-		schema.min(3, 'Slug must be at least 3 characters').regex(slugRegex, {
-			message:
-				'Slug must be lowercase, alphanumeric, and cannot contain spaces, double dashes, or start/end with a dash.'
-		})
+	slug: () => slugSchema
 }).omit({
 	id: true,
 	createdAt: true,
@@ -28,6 +29,12 @@ export const selectOrgSchema = createSelectSchema(orgs).omit({
 	archivedAt: true
 });
 
+export const selectOrgListSchema = z.array(selectOrgSchema);
+
 export const selectOrgWithStoreSchema = selectOrgSchema.extend({
 	stores: z.array(selectStoreSchema)
+});
+
+export const slugParamSchema = z.object({
+	slug: slugSchema
 });
