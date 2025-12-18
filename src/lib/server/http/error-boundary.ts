@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 import { JOSEError } from 'jose/errors';
-import handleJoseError from './jose.adapter';
+import handleJoseError from './adapters/jose.adapter';
 import { HTTPException } from 'hono/http-exception';
 import ErrorResponse from '$lib/server/http/ErrorResponse';
 
