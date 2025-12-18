@@ -1,18 +1,20 @@
 import { Hono } from 'hono';
 import { protect, zValidator } from '$lib/server/api/middleware';
-import { insertOrgSchema, updateOrgSchema } from '$lib/server/db/zod';
+import {
+	insertOrgSchema,
+	selectOrgListSchema,
+	selectOrgSchema,
+	slugParamSchema,
+	updateOrgSchema
+} from '$lib/server/db/zod';
+import ok from '$lib/server/http/ok.ts';
 
 const orgs = new Hono()
-	.get('/', protect, async (c) => {
-		const Org = c.var.Org;
-
-		const data = await Org.listWithStores();
-
-		return c.json({
-			success: true,
-			data
-		});
-	})
+	/**
+	 * @route POST /api/orgs
+	 * @auth required
+	 * @description Create new org
+	 */
 	.post('/', protect, zValidator('json', insertOrgSchema), async (c) => {
 		const Org = c.var.Org;
 
@@ -20,52 +22,65 @@ const orgs = new Hono()
 
 		const data = await Org.create(insertData);
 
-		return c.json(
-			{
-				success: true,
-				data,
-				message: 'Organization created successfully.'
-			},
-			201
-		);
+		return c.json(ok(selectOrgSchema, data, 'Org created'), 201);
 	})
-	.get('/:slug', async (c) => {
-		const { slug } = c.req.param();
+	/**
+	 * @route GET /api/orgs
+	 * @auth required
+	 * @description List all orgs
+	 */
+	.get('/', protect, async (c) => {
 		const Org = c.var.Org;
 
-		const data = await Org.getBySlug(slug);
+		const data = await Org.list();
 
-		return c.json({
-			success: true,
-			data
-		});
+		return c.json(ok(selectOrgListSchema, data), 200);
 	})
-	.put('/:slug', protect, zValidator('json', updateOrgSchema), async (c) => {
-		const { slug } = c.req.param();
-		const newData = c.req.valid('json');
+	/**
+	 * @route GET /api/orgs/:slug
+	 * @auth public
+	 * @description Fetch org by slug
+	 */
+	.get('/:slug', zValidator('param', slugParamSchema), async (c) => {
+		const { slug } = c.req.valid('param');
 		const Org = c.var.Org;
 
-		const data = await Org.updateBySlug(slug, newData);
+		const data = await Org.find(slug);
 
-		return c.json({
-			success: true,
-			data
-		});
+		return c.json(ok(selectOrgSchema, data), 200);
 	})
-	.delete('/:slug', protect, async (c) => {
-		const { slug } = c.req.param();
+	/**
+	 * @route PUT /api/orgs/:slug
+	 * @auth required
+	 * @description Update org by slug
+	 */
+	.put(
+		'/:slug',
+		protect,
+		zValidator('param', slugParamSchema),
+		zValidator('json', updateOrgSchema),
+		async (c) => {
+			const { slug } = c.req.valid('param');
+			const newData = c.req.valid('json');
+			const Org = c.var.Org;
+
+			const data = await Org.update(slug, newData);
+
+			return c.json(ok(selectOrgSchema, data, 'Org Updated'), 200);
+		}
+	)
+	/**
+	 * @route DELETE /api/orgs/:slug
+	 * @auth required
+	 * @description Delete org by slug
+	 */
+	.delete('/:slug', protect, zValidator('param', slugParamSchema), async (c) => {
+		const { slug } = c.req.valid('param');
 		const Org = c.var.Org;
 
-		await Org.deleteBySlug(slug);
+		await Org.delete(slug);
 
-		return c.json(
-			{
-				success: true,
-				data: {},
-				message: 'Organization deleted successfully.'
-			},
-			200
-		);
+		return c.body(null, 204);
 	});
 
 export default orgs;
