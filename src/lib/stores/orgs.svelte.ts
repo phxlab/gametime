@@ -1,9 +1,9 @@
-import type { SelectOrgWithStore } from '$lib/server/db/contracts';
+import type { OrgsResponse } from '$lib/server/db/contracts';
 
 class OrgState {
-	list = $state<SelectOrgWithStore[]>([]);
+	list = $state<OrgsResponse>([]);
 
-	set(data: SelectOrgWithStore[]) {
+	set(data: OrgsResponse) {
 		this.list = data;
 	}
 }
