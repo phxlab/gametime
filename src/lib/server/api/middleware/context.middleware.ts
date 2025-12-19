@@ -10,7 +10,6 @@ const contextMiddleware = createMiddleware<Env>(async (c, next) => {
 	const OrgService = new Org(db);
 	const StoreService = new Store(db);
 
-
 	c.set('DB', db);
 	c.set('Org', OrgService);
 	c.set('Store', StoreService);
