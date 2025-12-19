@@ -2,8 +2,8 @@ import { Hono } from 'hono';
 import { protect, zValidator } from '$lib/server/api/middleware';
 import {
 	insertOrgSchema,
-	selectOrgListSchema,
 	selectOrgSchema,
+	selectOrgWithStoreSchema,
 	slugParamSchema,
 	updateOrgSchema
 } from '$lib/server/db/zod';
@@ -34,7 +34,7 @@ const orgs = new Hono()
 
 		const data = await Org.list();
 
-		return c.json(ok(selectOrgListSchema, data), 200);
+		return c.json(ok(selectOrgWithStoreSchema, data), 200);
 	})
 	/**
 	 * @route GET /api/orgs/:slug
