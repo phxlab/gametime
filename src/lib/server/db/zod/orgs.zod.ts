@@ -31,9 +31,18 @@ export const selectOrgSchema = createSelectSchema(orgs).omit({
 
 export const selectOrgListSchema = z.array(selectOrgSchema);
 
-export const selectOrgWithStoreSchema = selectOrgSchema.extend({
-	stores: z.array(selectStoreSchema)
-});
+export const selectOrgWithStoreSchema = z.array(
+	selectOrgSchema.extend({
+		stores: z.array(selectStoreSchema)
+	})
+);
+
+export const OrgsResponse = z.array(
+	selectOrgSchema.extend({
+		stores: z.array(selectStoreSchema),
+		createdAt: z.string()
+	})
+);
 
 export const slugParamSchema = z.object({
 	slug: slugSchema
