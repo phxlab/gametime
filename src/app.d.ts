@@ -1,10 +1,16 @@
-import type OrgService from '$lib/server/services/orgs/org.service';
+import type { Org as OrgService, Store as StoreService } from '$lib/server/services';
+import type { Org } from '$lib/server/contracts';
+import type { DrizzleD1Database } from 'drizzle-orm/d1';
+import type { schema } from '$lib/server/db/schema';
 
 declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
 			Org: OrgService;
+			Store: StoreService;
+			currentOrg: Org;
+			db: DrizzleD1Database<typeof schema>;
 		}
 		interface PageData {
 			flash?: { type: 'success' | 'error'; message: string };
