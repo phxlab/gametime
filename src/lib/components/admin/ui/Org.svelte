@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Org } from '$lib/server/contracts/orgs.contract';
+	import type { OrgWithStores } from '$lib/server/contracts/orgs.contract';
 	import { resolve } from '$app/paths';
 	import { slide } from 'svelte/transition';
 
 	type Props = {
-		org: Org;
+		org: OrgWithStores;
 	};
 
 	let storesOpen = $state(false);
