@@ -4,6 +4,7 @@
 	};
 
 	let { value = $bindable('indigo') }: Props = $props();
+	value = 'indigo';
 
 	const colors = [
 		'slate',
@@ -96,5 +97,5 @@
 	</div>
 
 	<!-- Hidden input for form submission -->
-	<input type="hidden" name="color" value={selectedColor} />
+	<input type="hidden" name="color" bind:value />
 </div>
