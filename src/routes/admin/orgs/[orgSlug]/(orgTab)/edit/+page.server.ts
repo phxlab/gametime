@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
-import { selectOrgSchema, updateOrgSchema } from '$lib/server/contracts/orgs.contract';
+import { selectOrgSchema, updateOrgSchema } from '$lib/server/contracts/orgs.contract.ts';
 import { fail } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 
@@ -24,7 +24,7 @@ export const actions: Actions = {
 		await locals.Org.update(params.orgSlug, form.data);
 
 		throw redirect(
-			`/admin`,
+			`/admin/orgs/${params.orgSlug}`,
 			{
 				type: 'success',
 				message: 'Organization Updated'
