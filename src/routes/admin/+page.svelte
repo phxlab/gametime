@@ -4,7 +4,9 @@
 
 	const { data } = $props();
 
-	let filteredOrgs = $state(data.orgs);
+	const getOrgs = () => data.orgs;
+
+	let filteredOrgs = $state(getOrgs());
 	let searchTerm = $state('');
 
 	const handleSearch = () => {
