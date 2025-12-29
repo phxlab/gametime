@@ -27,7 +27,7 @@ export const actions: Actions = {
 		}
 
 		throw redirect(
-			`/admin`,
+			`/admin/orgs/${form.data.slug}`,
 			{
 				type: 'success',
 				message: 'Organization Created'
