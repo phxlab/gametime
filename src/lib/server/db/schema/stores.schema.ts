@@ -6,14 +6,14 @@ export const stores = sqliteTable(
 	'stores',
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
+		orgId: integer('org_id')
+			.notNull()
+			.references(() => orgs.id, { onDelete: 'cascade' }),
 		name: text('name').notNull(),
 		slug: text('slug').notNull(),
 		shipping: text('shipping', { enum: ['required', 'optional', 'none'] }).notNull(),
 		...timestamps,
-		...archivedAt,
-		orgId: integer('org_id')
-			.notNull()
-			.references(() => orgs.id)
+		...archivedAt
 	},
-	(t) => [uniqueIndex('org_slug_idx').on(t.orgId, t.slug)]
+	(t) => [uniqueIndex('stores_org_slug_unique').on(t.orgId, t.slug)]
 );
